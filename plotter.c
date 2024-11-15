@@ -161,6 +161,8 @@ int main(int argc, char *argv[]) {
             sprintf(temp, "Data bits:  %d", data_bits);
             DrawText(temp, xPos, yPos + (5 * fontLineHeight), fontSize, fontColor);
 
+            DrawText("time ->", WIDTH - 2*PAD, HEIGHT - PAD, fontSize, fontColor);
+
             DrawLine(PAD, HEIGHT - PAD, WIDTH - PAD, HEIGHT - PAD, WHITE); // x-axis
             DrawLine(PAD, HEIGHT - PAD, PAD, PAD, WHITE);                  // y-axis
 
