@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <math.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -11,6 +12,7 @@
 #define WIDTH 800
 #define HEIGHT 800
 #define TAG "UART Plotter"
+#define PAD 40
 
 void usage(const char *prog_name) {
     printf("Usage: %s -D <device> [-b <baud_rate>] [-p <parity>] [-s <stop_bits>] [-d <data_bits>] [-h]\n", prog_name);
@@ -113,35 +115,71 @@ int main(int argc, char *argv[]) {
 
     char buffer[BUFFER_SIZE];
     ssize_t nbytes;
-    float value;
+    int value;
 
     InitWindow(WIDTH, HEIGHT, TAG);
-    Font Helvetica = LoadFont("./font/Helvetica-Bold.ttf");
     SetTargetFPS(60);
+
+    const int fontSize = 20;
+    const Color fontColor = WHITE;
+    const int xPos = WIDTH - 300;
+    const int yPos = PAD;
+    const int fontLineHeight = 25;
+    static int values[100];
+    int index = 0;
 
     printf("Waiting for data from %s...\n", device);
     while (!WindowShouldClose()) {
 
-        /* nbytes = read(fd, buffer, sizeof(buffer) - 1); */
-        /* if (nbytes > 0) { */
-        /*     buffer[nbytes] = '\0'; */
-        /*     if (sscanf(buffer, "%f", &value) == 1) { */
-        /*         printf("Received float: %f\n", value); */
-        /*     } else { */
-        /*         printf("Received non-float data: %s\n", buffer); */
-        /*     } */
-        /* } else if (nbytes < 0) { */
-        /*     perror("Error reading data"); */
-        /*     break; */
-        /* } */
+        nbytes = read(fd, buffer, sizeof(buffer) - 1);
+        if (nbytes > 0) {
+            buffer[nbytes] = '\0';
+            if (sscanf(buffer, "%d", &value) == 1) {
+                printf("Received float: %d\n", value);
+                values[index++] = value;
+            } else {
+                printf("Received non-float data: %s\n", buffer);
+            }
+        } else if (nbytes < 0) {
+            perror("Error reading data");
+            break;
+        }
 
         BeginDrawing();
         {
-            ClearBackground(BLACK);
-            /* DrawText("Hello from the plotter", 100, 100, 24, WHITE); */
-            Vector2 pos = {.x = 100, .y = 100};
-            DrawTextEx(Helvetica, "Hello World", pos, 24, 1, WHITE);
+            ClearBackground((Color){.r = 24, .g = 24, .b = 24});
+            char temp[100];
+            DrawText("Configuration:", xPos, yPos, fontSize, LIME);
+            sprintf(temp, "Device:     %s", device);
+            DrawText(temp, xPos, yPos + (1 * fontLineHeight), fontSize, fontColor);
+            sprintf(temp, "Baud Rate:  %d", baud_rate);
+            DrawText(temp, xPos, yPos + (2 * fontLineHeight), fontSize, fontColor);
+            sprintf(temp, "Parity:     %s", parity);
+            DrawText(temp, xPos, yPos + (3 * fontLineHeight), fontSize, fontColor);
+            sprintf(temp, "Stop bits:  %d", stop_bits);
+            DrawText(temp, xPos, yPos + (4 * fontLineHeight), fontSize, fontColor);
+            sprintf(temp, "Data bits:  %d", data_bits);
+            DrawText(temp, xPos, yPos + (5 * fontLineHeight), fontSize, fontColor);
 
+            DrawLine(PAD, HEIGHT - PAD, WIDTH - PAD, HEIGHT - PAD, WHITE); // x-axis
+            DrawLine(PAD, HEIGHT - PAD, PAD, PAD, WHITE);                  // y-axis
+
+            int count = 0;
+            float max = -INFINITY;
+            for (int i = 0; i < 100; i++) {
+                if (values[i]) {
+                    if(values[i] > max) {
+                        max = values[i];
+                    }
+                    count++;
+                }
+            }
+
+            for(int i = 1; i < count - 1; i++) {
+                DrawCircle(PAD + i * WIDTH/count, HEIGHT - PAD - values[i] * 10, 3.0f, GREEN);
+                int scaleY = (HEIGHT - (2*PAD)) / max;
+                DrawLine(PAD + (i - 1) * WIDTH/count, HEIGHT - PAD - values[i - 1] * scaleY, PAD + i * WIDTH/count, HEIGHT - PAD - values[i] * scaleY, GREEN);
+            }
         }
         EndDrawing();
     }
