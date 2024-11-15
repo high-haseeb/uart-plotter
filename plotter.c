@@ -1,7 +1,10 @@
+// Copyright (C) 2024  High Haseeb
+// See end of file for extended copyright information.
+
 #include "raylib.h"
-#include <math.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -161,7 +164,7 @@ int main(int argc, char *argv[]) {
             sprintf(temp, "Data bits:  %d", data_bits);
             DrawText(temp, xPos, yPos + (5 * fontLineHeight), fontSize, fontColor);
 
-            DrawText("time ->", WIDTH - 2*PAD, HEIGHT - PAD, fontSize, fontColor);
+            DrawText("time ->", WIDTH - 2 * PAD, HEIGHT - PAD, fontSize, fontColor);
 
             DrawLine(PAD, HEIGHT - PAD, WIDTH - PAD, HEIGHT - PAD, WHITE); // x-axis
             DrawLine(PAD, HEIGHT - PAD, PAD, PAD, WHITE);                  // y-axis
@@ -170,17 +173,18 @@ int main(int argc, char *argv[]) {
             float max = -INFINITY;
             for (int i = 0; i < 100; i++) {
                 if (values[i]) {
-                    if(values[i] > max) {
+                    if (values[i] > max) {
                         max = values[i];
                     }
                     count++;
                 }
             }
 
-            for(int i = 1; i < count - 1; i++) {
-                DrawCircle(PAD + i * WIDTH/count, HEIGHT - PAD - values[i] * 10, 3.0f, GREEN);
-                int scaleY = (HEIGHT - (2*PAD)) / max;
-                DrawLine(PAD + (i - 1) * WIDTH/count, HEIGHT - PAD - values[i - 1] * scaleY, PAD + i * WIDTH/count, HEIGHT - PAD - values[i] * scaleY, GREEN);
+            for (int i = 1; i < count - 1; i++) {
+                DrawCircle(PAD + i * WIDTH / count, HEIGHT - PAD - values[i] * 10, 3.0f, GREEN);
+                int scaleY = (HEIGHT - (2 * PAD)) / max;
+                DrawLine(PAD + (i - 1) * WIDTH / count, HEIGHT - PAD - values[i - 1] * scaleY, PAD + i * WIDTH / count,
+                         HEIGHT - PAD - values[i] * scaleY, GREEN);
             }
         }
         EndDrawing();
@@ -190,3 +194,27 @@ int main(int argc, char *argv[]) {
     close(fd);
     return 0;
 }
+
+// TODO:
+// make the config options actullay work
+// add legends for exact values and noramlized valus
+// make the values array dynamic
+// qee mouwe interactivity
+// show values for the points on y-axis
+
+// Copyright (C) 2024  High Haseeb
+//
+// This file is part of uart-plotter.
+//
+// uart-plotter is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// uart-plotter is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with uart-plotter.  If not, see <https://www.gnu.org/licenses/>.

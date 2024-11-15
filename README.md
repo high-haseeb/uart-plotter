@@ -1,7 +1,7 @@
 # UART Serial Plotter
 ![preview](./preview.png) 
 
-A simple UART serial plotter application using **raylib** to visualize data received from a UART device. This tool allows you to plot values from a microcontroller or other UART-enabled devices.
+A simple UART serial plotter application using **raylib** to visualize data received from a UART device. This tool allows you to plot values from a UART-enabled device.
 
 ## Requirements
 - **gcc**: C compiler for building the project.
@@ -27,9 +27,6 @@ A simple UART serial plotter application using **raylib** to visualize data rece
     ```
 
 ## License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Author
-
-This project was written by **high-haseeb**.
+Copyright (C) 2024  High Haseeb
