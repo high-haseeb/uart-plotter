@@ -1,4 +1,5 @@
 # UART Serial Plotter
+![preview](./preview.png) 
 
 A simple UART serial plotter application using **raylib** to visualize data received from a UART device. This tool allows you to plot values from a microcontroller or other UART-enabled devices.
 
